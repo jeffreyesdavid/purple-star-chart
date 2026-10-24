@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Zi Wei Dou Shu (Purple Star Astrology) charts in English: 12 palaces, 100+ stars, and the Four Transformations, explained.">
+<title>Purple Star Chart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+
+/* Layout: a traditional 4×4 Zi Wei board (12 palaces around a central seal), with a reading panel beside it on wide screens and below it on phones. */
+/* Single celestial night theme by choice: indigo sky, sun-gold, violet rays, aurora teal, moonlit cloud. */
+:root {
+  --ground: #121837;       /* night sky */
+  --sky-deep: #0b0f26;
+  --paper: rgba(26, 32, 72, .72);   /* glassy night panel */
+  --paper-solid: #1a2048;
+  --ink: #f4ecd8;          /* moonlight */
+  --muted: #b4b0cf;
+  --line: rgba(232, 184, 88, .28);  /* gold hairline */
+  --violet: #c9a6f2;       /* 紫 ray */
+  --violet-deep: #6d3fa6;
+  --violet-soft: rgba(140, 90, 210, .22);
+  --gold: #f2c25a;         /* sun */
+  --gold-deep: #c8862a;
+  --gold-soft: rgba(242, 194, 90, .14);
+  --aurora: #4fd1c5;
+  --cloud: #f0dca8;
+  --cinnabar: #ff8a76;
+  --jade: #6fdcaa;
+  --font-display: "Marcellus", "Iowan Old Style", Georgia, serif;
+  --font-body: "Albert Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-han: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  color-scheme: dark;
+}
+
+body { color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; min-height: 100%;
+  background:
+    radial-gradient(ellipse 70% 18% at 50% 9%, rgba(79, 209, 197, .22), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 50% 38%, rgba(150, 95, 220, .20), transparent 72%),
+    radial-gradient(ellipse 80% 22% at 25% 100%, rgba(240, 220, 168, .16), transparent 70%),
+    radial-gradient(ellipse 70% 20% at 80% 98%, rgba(240, 220, 168, .12), transparent 70%),
+    linear-gradient(180deg, var(--sky-deep), var(--ground) 45%, #1b2150);
+  background-attachment: fixed; }
+#stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.wrap { position: relative; z-index: 1; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 22px; }
+.han { font-family: var(--font-han); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(32px, 5vw, 54px); line-height: 1.05; letter-spacing: .02em; background: linear-gradient(180deg, #fff3cf, var(--gold) 55%, var(--gold-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 30px rgba(242,194,90,.25); }
+h1 .han { -webkit-text-fill-color: var(--violet); }
+header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+header .emblem { width: 84px; height: 84px; flex: none; filter: drop-shadow(0 0 18px rgba(242,194,90,.45)); }
+header > div { min-width: 0; flex: 1 1 280px; }
+h1 .han { color: var(--violet); font-size: .8em; margin-left: .25em; }
+.lede { color: var(--muted); max-width: 62ch; margin: 6px 0 0; }
+.label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* Birth form */
+form { display: flex; flex-wrap: wrap; gap: 12px 14px; align-items: end; background: var(--paper); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field input, .field select { font: inherit; color: var(--ink); background: rgba(11,15,38,.6); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px; }
+.field input:focus-visible, .field select:focus-visible, button:focus-visible, .palace:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; min-height: 40px; }
+.seg label { display: flex; align-items: center; padding: 0 12px; cursor: pointer; background: rgba(11,15,38,.6); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + span { color: var(--violet); font-weight: 600; }
+.seg label:has(input:checked) { background: var(--violet-soft); }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--violet); outline-offset: -2px; }
+button.cast { font: 600 15px var(--font-body); background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: var(--sky-deep); border: 0; border-radius: 999px; padding: 0 24px; box-shadow: 0 0 22px rgba(242,194,90,.35); min-height: 40px; cursor: pointer; }
+button.cast:hover { filter: brightness(1.08); }
+.note { width: 100%; font-size: 13px; color: var(--muted); margin: 0; }
+.note.err { color: var(--cinnabar); }
+.example-flag { display: inline-block; font-size: 12px; font-weight: 600; color: var(--gold); background: var(--gold-soft); border-radius: 999px; padding: 2px 10px; }
+
+/* Board + reading */
+.main { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(148px, auto));
+  gap: 0; border: 1px solid var(--gold); border-radius: 12px; overflow: hidden; background: var(--paper); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 0 60px rgba(150,95,220,.25), inset 0 0 0 1px rgba(242,194,90,.12); }
+.palace { position: relative; border: .5px solid var(--line); padding: 8px 8px 26px; cursor: pointer; text-align: left; font: inherit; color: inherit; background: transparent; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.palace:hover { background: var(--violet-soft); }
+.palace.sel { background: var(--violet-soft); box-shadow: inset 0 0 0 1.5px var(--gold), inset 0 0 24px rgba(242,194,90,.18); }
+.palace.opp { background: color-mix(in srgb, var(--violet-soft) 45%, transparent); }
+.p-major { display: flex; flex-wrap: wrap; gap: 2px 8px; }
+.star-major { font-weight: 600; font-size: 14px; color: var(--violet); line-height: 1.25; }
+.star-major .han { font-size: 15px; }
+.star-major small { font-weight: 400; color: var(--muted); font-size: 11px; margin-left: 2px; }
+.p-minor { font-size: 12px; color: var(--ink); line-height: 1.35; }
+.p-adj { font-size: 11px; color: var(--muted); line-height: 1.35; }
+.mut { display: inline-grid; place-items: center; font: 700 10px var(--font-han); width: 16px; height: 16px; border-radius: 3px; color: var(--sky-deep); vertical-align: 1px; margin-left: 3px; }
+.mut.lu { background: var(--jade); } .mut.quan { background: var(--violet); } .mut.ke { background: var(--gold); } .mut.ji { background: var(--cinnabar); }
+.p-foot { position: absolute; left: 8px; right: 8px; bottom: 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font-size: 11px; }
+.p-name { font-family: var(--font-display); font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.p-name.soul { color: var(--gold); }
+.p-gz { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.p-tags { position: absolute; top: 6px; right: 6px; display: flex; gap: 3px; }
+.tag { font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border-radius: 3px; }
+.tag.body { background: var(--gold-soft); color: var(--gold); }
+.tag.dec { background: var(--violet); color: var(--sky-deep); }
+.tag.yr { background: var(--aurora); color: var(--sky-deep); }
+.center { grid-column: 2 / 4; grid-row: 2 / 4; border: .5px solid var(--line); padding: 16px; display: grid; align-content: center; gap: 10px; text-align: center;
+  background: radial-gradient(circle at 50% 40%, rgba(242,194,90,.16), rgba(140,90,210,.14) 45%, transparent 72%); }
+.seal { display: grid; justify-items: center; gap: 2px; }
+.seal svg { width: 92px; height: 92px; filter: drop-shadow(0 0 16px rgba(242,194,90,.5)); }
+.seal span { font-family: var(--font-han); font-size: 20px; color: var(--gold); letter-spacing: .2em; }
+@media (prefers-reduced-motion: no-preference) { .rays { transform-origin: 50px 50px; animation: spin 90s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } } }
+.facts { display: grid; grid-template-columns: auto auto; justify-content: center; gap: 3px 14px; font-size: 13px; text-align: left; }
+.facts dt { color: var(--muted); } .facts dd { margin: 0; font-weight: 500; }
+.pillars { display: flex; justify-content: center; gap: 10px; font-family: var(--font-han); font-size: 18px; }
+.pillars span { display: grid; gap: 1px; } .pillars small { font-family: var(--font-body); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+
+/* Phones: keep the board, shrink it to names + main stars */
+@media (max-width: 620px) {
+  .board { grid-template-rows: repeat(4, minmax(96px, auto)); }
+  .palace { padding: 5px 4px 22px; }
+  .p-minor, .p-adj, .star-major small, .p-gz { display: none; }
+  .star-major { font-size: 11px; } .star-major .han { font-size: 13px; }
+  .p-name { font-size: 11px; } .p-tags { top: 3px; right: 3px; } .tag { font-size: 8px; padding: 0 3px; }
+  .center { padding: 8px; gap: 6px; } .seal svg { width: 54px; height: 54px; } .seal span { font-size: 14px; } .facts { font-size: 11px; gap: 1px 8px; } .pillars { font-size: 14px; gap: 6px; }
+}
+
+.reading { display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--paper); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.card h2 { font-size: 24px; } .card h2 .han { color: var(--violet); font-size: .8em; margin-left: .3em; }
+.card h3 { font-size: 17px; }
+.card p { margin: 0; max-width: 65ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.starblock { display: grid; gap: 3px; padding-left: 12px; border-left: 2px solid var(--violet-soft); }
+.starblock .nm { font-weight: 600; color: var(--violet); }
+.starblock .bri { font-size: 12px; color: var(--muted); font-weight: 400; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12.5px; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; background: rgba(11,15,38,.5); }
+.chip .han { margin-left: 4px; color: var(--muted); }
+.empty-hint { color: var(--muted); font-size: 14px; }
+.trans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 460px) { .trans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tcell { border: 1px solid var(--line); border-radius: 8px; padding: 8px; display: grid; gap: 2px; font-size: 13px; }
+.tcell b { font-size: 12px; letter-spacing: .04em; }
+.tcell.lu b { color: var(--jade); } .tcell.quan b { color: var(--violet); } .tcell.ke b { color: var(--gold); } .tcell.ji b { color: var(--cinnabar); }
+.yearrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.yearrow input { width: 96px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 12.5px; color: var(--muted); max-width: 80ch; }
+.foot a { color: var(--violet); }
+.sumgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.sumitem { display: grid; gap: 4px; align-content: start; padding: 12px 14px; border-radius: 10px; background: rgba(11,15,38,.45); border: 1px solid rgba(201,166,242,.16); min-width: 0; }
+.sumitem h3 { font-size: 16px; color: var(--gold); }
+.sumitem p { font-size: 14px; }
+.sumitem.good h3 { color: var(--jade); } .sumitem.hard h3 { color: var(--cinnabar); }
+.traits { display: grid; gap: 6px; font-size: 14px; }
+.traits div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; }
+.traits dt, .traits b { color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
+.inpalace { font-size: 14px; background: var(--violet-soft); border-radius: 6px; padding: 8px 10px; }
+.mutnote { font-size: 14px; border-radius: 6px; padding: 8px 10px; background: rgba(11,15,38,.5); }
+@media (prefers-reduced-motion: no-preference) { .palace { transition: background .15s; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0c2"/><stop offset="1" stop-color="#e0a23c"/></linearGradient><linearGradient id="rv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b8ff"/><stop offset="1" stop-color="#7a45b8"/></linearGradient><radialGradient id="disc" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#f2c25a"/><stop offset="1" stop-color="#c8862a"/></radialGradient><linearGradient id="moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6dc"/><stop offset="1" stop-color="#e2c27a"/></linearGradient><symbol id="sunmoon" viewBox="0 0 100 100"><g class="rays"><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(0 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(15 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(30 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(45 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(60 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(75 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(90 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(105 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(120 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(135 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(150 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(165 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(180 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(195 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(210 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(225 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(240 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(255 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(270 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(285 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(300 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(315 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 12 S 52 6, 50 4" transform="rotate(330 50 50)" fill="none" stroke="url(#rg)" stroke-width="3.2" stroke-linecap="round"/><path d="M50 50 C 47 40, 53 32, 50 18 S 52 12, 50 10" transform="rotate(345 50 50)" fill="none" stroke="url(#rv)" stroke-width="2.4" stroke-linecap="round"/></g><circle cx="50" cy="50" r="17" fill="url(#disc)" stroke="#fff0c2" stroke-opacity=".6" stroke-width=".8"/><circle cx="50" cy="50" r="13.5" fill="none" stroke="#c8862a" stroke-opacity=".5" stroke-width=".6" stroke-dasharray="1.6 1.6"/><path d="M60 14 A 37 37 0 1 1 60 86 A 30 30 0 1 0 60 14 Z" fill="url(#moon)" opacity=".95"/><path d="M50 44 l1.6 4.4 4.6 .2 -3.6 2.9 1.3 4.5 -3.9 -2.6 -3.9 2.6 1.3 -4.5 -3.6 -2.9 4.6 -.2z" fill="#a9d8ff" opacity=".9"/></symbol></defs></svg>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header>
+    <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#sunmoon"/></svg>
+    <div>
+    <h1>Purple Star Chart <span class="han">紫微斗數</span></h1>
+    <p class="lede">Zi Wei Dou Shu in English. Enter a birth date and two-hour birth block to place 100+ stars across the 12 palaces of life, then tap any palace for its reading.</p>
+    </div>
+  </header>
+
+  <form id="birth" novalidate>
+    <div class="field">
+      <span class="label">Calendar</span>
+      <div class="seg" role="radiogroup" aria-label="Calendar">
+        <label><input type="radio" name="cal" id="cal-solar" value="solar" checked><span>Gregorian</span></label>
+        <label><input type="radio" name="cal" id="cal-lunar" value="lunar"><span>Lunar</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label" for="date">Birth date</label>
+      <input type="date" id="date" value="1990-06-15" min="1900-01-01" max="2100-12-31" required>
+    </div>
+    <div class="field">
+      <label class="label" for="hour">Birth hour</label>
+      <select id="hour"></select>
+    </div>
+    <div class="field">
+      <span class="label">Gender</span>
+      <div class="seg" role="radiogroup" aria-label="Gender">
+        <label><input type="radio" name="gender" id="g-m" value="male"><span>Male</span></label>
+        <label><input type="radio" name="gender" id="g-f" value="female" checked><span>Female</span></label>
+      </div>
+    </div>
+    <div class="field" id="leapwrap" hidden>
+      <label class="label" for="leap">Leap month</label>
+      <select id="leap"><option value="0">No</option><option value="1">Yes</option></select>
+    </div>
+    <button class="cast" type="submit" id="castbtn">Cast chart</button>
+    <p class="note" id="note"><span class="example-flag">Example chart</span> &nbsp;Showing a sample birth (June 15, 1990, 11am–1pm, female). Enter your own details and press Cast chart.</p>
+  </form>
+
+  <section class="card" id="summary" aria-live="polite"></section>
+
+  <div class="main">
+    <div class="board" id="board" aria-label="Zi Wei chart"></div>
+    <div class="reading">
+      <section class="card" id="detail" aria-live="polite"></section>
+      <section class="card" id="timing">
+        <h2>Timing <span class="han">運限</span></h2>
+        <div class="yearrow">
+          <label class="label" for="year">Year to read</label>
+          <input class="field" type="number" id="year" min="1900" max="2100" style="font:inherit;color:var(--ink);background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:6px 8px">
+        </div>
+        <div id="timingBody"></div>
+      </section>
+      <section class="card">
+        <h3>The Four Transformations</h3>
+        <div class="legend">
+          <span><span class="mut lu">祿</span> Luck: flow, gain, ease</span>
+          <span><span class="mut quan">權</span> Power: drive, authority</span>
+          <span><span class="mut ke">科</span> Fame: reputation, help</span>
+          <span><span class="mut ji">忌</span> Obstacle: friction, lessons</span>
+        </div>
+        <p class="foot">Each year's heavenly stem transforms four stars. Birth-year transformations are marked on the board; the decade and year ones are listed under Timing.</p>
+      </section>
+    </div>
+  </div>
+
+  <p class="foot"><strong>Credits.</strong> Inspired by <a href="https://github.com/Renhuai123/ziwei-doushu" target="_blank" rel="noopener">ziwei-doushu</a> by Renhuai123 (王多鱼AI) and its Chinese site <a href="https://metisziwei.com" target="_blank" rel="noopener">metisziwei.com</a>, based on Ni Haixia's <span class="han">天紀</span> teachings. This is an independent English version by <a href="https://github.com/jeffreyesdavid" target="_blank" rel="noopener">Jeffrey David</a>.</p>
+  <p class="foot">Chart calculated in your browser with the open-source <a href="https://github.com/SylarLong/iztro" target="_blank" rel="noopener">iztro</a> engine. Birth hour uses local clock time without true-solar-time correction. Readings are a cultural and reflective guide, not predictions to make decisions on.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/iztro@2.6.3/dist/iztro.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Two-hour blocks (iztro timeIndex 0–12)
+  var HOURS = [
+    ["Early Zi 子", "12–1am"], ["Chou 丑", "1–3am"], ["Yin 寅", "3–5am"], ["Mao 卯", "5–7am"], ["Chen 辰", "7–9am"], ["Si 巳", "9–11am"],
+    ["Wu 午", "11am–1pm"], ["Wei 未", "1–3pm"], ["Shen 申", "3–5pm"], ["You 酉", "5–7pm"], ["Xu 戌", "7–9pm"], ["Hai 亥", "9–11pm"], ["Late Zi 子", "11pm–12am"]
+  ];
+  HOURS.forEach(function (h, i) { var o = document.createElement("option"); o.value = i; o.textContent = h[1] + "  ·  " + h[0]; $("hour").appendChild(o); });
+  $("hour").value = "6";
+
+  var PALACES = {
+    soul: ["Life", "命宮", "Your core self: temperament, talents, and the overall shape of your life. The most important palace; read it first."],
+    siblings: ["Siblings", "兄弟", "Brothers, sisters, close peers, and how you cooperate with people at your own level."],
+    spouse: ["Spouse", "夫妻", "Romantic partnership: the kind of partner you attract and how love and marriage tend to go."],
+    children: ["Children", "子女", "Children, students, creative output, and the things you nurture and pass on."],
+    wealth: ["Wealth", "財帛", "How money comes and goes: earning style, spending habits, and financial luck."],
+    health: ["Health", "疾厄", "Physical constitution, stress patterns, and the parts of the body to look after."],
+    surface: ["Travel", "遷移", "Life away from home: travel, moving, public image, and how the outside world meets you."],
+    friends: ["Friends", "交友", "Friends, colleagues, followers, and the support (or drain) from your wider circle."],
+    career: ["Career", "官祿", "Work, ambition, status, and the kind of career path that suits you."],
+    property: ["Property", "田宅", "Home, real estate, family assets, and the atmosphere of where you live."],
+    spirit: ["Fortune & Spirit", "福德", "Inner happiness, mindset, hobbies, and spiritual life: how much peace you feel."],
+    parents: ["Parents", "父母", "Parents, mentors, bosses, and your relationship with authority and documents."]
+  };
+
+  var MAJOR = {
+    emperor: ["Zi Wei", "紫微", "Emperor", "The leader star. Dignity, pride, a need to be in charge and respected. Brings protection, but wants loyal helpers around it."],
+    advisor: ["Tian Ji", "天機", "Strategist", "The thinker. Quick, clever, curious, always planning. Good at analysis and change, can overthink."],
+    sun: ["Tai Yang", "太陽", "Sun", "Generous, warm, public-facing. Gives energy to others and shines in visible roles; strongest when born by day."],
+    warrior: ["Wu Qu", "武曲", "General of Wealth", "Discipline and money. Decisive, hard-working, practical; a strong star for finance and execution."],
+    fortunate: ["Tian Tong", "天同", "Contentment", "The happy child. Easygoing, kind, enjoys comfort; luck through a gentle approach, may lack push."],
+    judge: ["Lian Zhen", "廉貞", "Integrity", "Intense and complex. Principles, passion, and politics; can be very charismatic or very stubborn."],
+    empress: ["Tian Fu", "天府", "Treasury", "The steady keeper. Stable, conservative, good with resources and people; protects and stores up."],
+    moon: ["Tai Yin", "太陰", "Moon", "Gentle, intuitive, artistic, and private. Linked with property and savings; strongest when born at night."],
+    wolf: ["Tan Lang", "貪狼", "Desire", "Charm, appetite, and versatility. Social, artistic, drawn to pleasure and mysticism; many talents."],
+    advocator: ["Ju Men", "巨門", "Great Gate", "The voice. Speech, debate, research, and doubt. Great for teaching and law; watch gossip and misunderstanding."],
+    minister: ["Tian Xiang", "天相", "Minister", "Fair, polished, helpful. A natural mediator and right-hand person who values image and harmony."],
+    sage: ["Tian Liang", "天梁", "Elder Sage", "The protector. Wisdom, mentorship, and old-soul energy; often turns trouble into good fortune."],
+    marshal: ["Qi Sha", "七殺", "Seven Killings", "The general in the field. Bold, independent, risk-taking; big highs and lows, built for challenge."],
+    rebel: ["Po Jun", "破軍", "Army Breaker", "The pioneer. Breaks the old to build the new; restless, brave, unconventional, consumes and renews."]
+  };
+  // Deeper traits for each main star: strengths, watch-outs, love, money, work
+  var DEEP = {
+    emperor: ["Natural authority, dignity, generosity toward people you trust, and the ability to organize others around a vision.", "Pride, wanting to control, sensitivity to criticism, and loneliness at the top if helpers are missing.", "Loyal and protective; needs a partner who respects them and lets them lead in some areas.", "Good at managing resources and attracting backers; spends on quality and image.", "Leadership, management, running your own business, any role with a title and a team."],
+    advisor: ["A fast, analytical mind, good planning, adaptability, and a talent for spotting how systems work.", "Overthinking, nervous energy, changing direction too often, and doubting good decisions.", "Needs mental connection and conversation; can analyze feelings instead of feeling them.", "Earns through skill and strategy more than labor; does well with planning and side income.", "Strategy, tech, research, consulting, design, anything that rewards a sharp mind."],
+    sun: ["Warmth, generosity, optimism, and the drive to help and be seen. Energy that lifts the room.", "Giving too much, burnout, needing recognition, and doing a lot of work that others take credit for.", "Open-hearted and giving; can put partners second to public duties.", "Money comes through visibility and service; reputation matters more than saving.", "Public roles, teaching, media, politics, performing, social causes."],
+    warrior: ["Discipline, courage, decisiveness, and a strong practical sense of money and execution.", "Bluntness, stubbornness, being all work, and coming across colder than you are.", "Shows love through actions and providing, not words; can be guarded.", "One of the strongest wealth stars. Good with money, budgets, and hard-earned gains.", "Finance, trading, business, engineering, the military, sports, anything results-driven."],
+    fortunate: ["Kindness, calm, humor, and a gift for enjoying life. People feel comfortable around you.", "Laziness, avoiding conflict, procrastination, and waiting for luck instead of acting.", "Sweet and romantic; wants an easy, affectionate relationship without drama.", "Money arrives more easily than expected, but can drift away on comfort spending.", "Hospitality, food, entertainment, wellness, service, creative and lifestyle work."],
+    judge: ["Passion, principle, charisma, and the ability to handle complex or political situations.", "Intensity, jealousy, rigidity, and getting tangled in power games or emotional extremes.", "Deeply passionate; love can be intense, with strong attraction and strong tests.", "Earns through skill, connections, or authority; does well in structured systems.", "Law, government, security, management, design, art with discipline behind it."],
+    empress: ["Stability, patience, good judgment, and a talent for building and protecting resources.", "Being too cautious, conservative, or materialistic; resisting change.", "Steady and dependable; values security and long-term commitment.", "A wealth-keeping star. Saves well and builds assets slowly and safely.", "Finance, real estate, management, administration, anything that grows over time."],
+    moon: ["Intuition, gentleness, beauty, imagination, and emotional intelligence.", "Moodiness, sensitivity, hiding feelings, and indecision when stressed.", "Tender and romantic; needs emotional safety and a calm home.", "Good at saving and property; money builds quietly over time.", "Art, design, music, real estate, finance, caring and creative roles."],
+    wolf: ["Charm, many talents, social ease, artistic gifts, and an adventurous appetite for life.", "Restlessness, overindulgence, chasing pleasure, and scattering energy across too many things.", "Magnetic and flirtatious; needs excitement and connection in love.", "Can make money through charm, art, and networking; spending can match earning.", "Entertainment, music, sales, marketing, beauty, hospitality, spiritual or occult studies."],
+    advocator: ["A strong voice, sharp analysis, research skill, and a talent for persuading or teaching.", "Suspicion, arguments, gossip, being misunderstood, and doubting yourself or others.", "Needs honest communication; misunderstandings are the main relationship risk.", "Earns through speaking, knowledge, and expertise.", "Law, teaching, sales, media, research, consulting, food and medicine."],
+    minister: ["Fairness, diplomacy, good taste, and being the trusted right hand who keeps things balanced.", "People-pleasing, depending on others' approval, and being too easily influenced.", "Considerate and loyal; values harmony and a well-matched partner.", "Steady earner; does well managing money for others or within an organization.", "Administration, HR, PR, styling, coordination, any supporting leadership role."],
+    sage: ["Wisdom, protection, mentoring, and turning problems into good outcomes. An old-soul star.", "Lecturing, acting older than your age, or getting pulled into others' troubles.", "Caring and protective; often attracted to older or more mature partners.", "Not focused on money but tends to be protected from disaster; help comes when needed.", "Medicine, counseling, law, teaching, insurance, social work, advising."],
+    marshal: ["Courage, independence, ambition, and the ability to take risks and fight through anything.", "Impatience, harshness, going it alone, and life swinging between big highs and lows.", "Intense and independent; needs a partner who gives space and can keep up.", "Money comes in bursts from bold moves; good at big wins, needs a safety net.", "Entrepreneurship, sales, the military, surgery, sports, anything competitive."],
+    rebel: ["Bravery, originality, and a gift for tearing down what's broken and building something new.", "Restlessness, breaking things that didn't need breaking, and an up-and-down life.", "Passionate but changeable; relationships go through big transformations.", "Money comes and goes in cycles; does best with bold moves plus discipline.", "Startups, the arts, transport, tech, reinvention, any pioneering work."]
+  };
+  var BRIGHT_INFO = {
+    Peak: "the star is at its very best here, so its gifts come out strongly and its flaws stay small.",
+    Strong: "the star is well placed, so its good side leads.",
+    Good: "the star works well here with a few rough edges.",
+    Fair: "the star is moderately helped here.",
+    Neutral: "the star is average here, so its effect depends on the stars around it.",
+    Weak: "the star struggles a little here, so its gifts take more effort to show.",
+    Fallen: "the star is in a hard spot here, so its challenges show up more and its gifts come through effort and experience."
+  };
+  var PALACE_FOCUS = {
+    soul: "your personality and the overall direction of your life", siblings: "your peers and brothers and sisters", spouse: "love and partnership",
+    children: "children, students, and creative projects", wealth: "money and earning", health: "your body and well-being",
+    surface: "your life out in the world and away from home", friends: "your friends, coworkers, and network", career: "work and ambition",
+    property: "home and assets", spirit: "your inner happiness and peace of mind", parents: "parents, mentors, and authority figures"
+  };
+  var MUT_TEXT = {
+    "禄": "Luck (祿) here means things flow easily in {f}. Opportunities and goodwill tend to show up in this area.",
+    "权": "Power (權) here gives you drive and control in {f}. You take charge here, and can be forceful.",
+    "科": "Fame (科) here brings a good reputation and helpful people in {f}. Things go smoothly and look good.",
+    "忌": "Obstacle (忌) here marks {f} as your main life lesson. Expect friction or worry here that turns into strength once you work through it."
+  };
+
+  var MINOR = {
+    officer: ["Zuo Fu", "左輔", "Left Assistant", "Steady help and support from others."],
+    helper: ["You Bi", "右弼", "Right Assistant", "Flexible help, kindness, behind-the-scenes support."],
+    scholar: ["Wen Chang", "文昌", "Literary Star", "Study, writing, exams, and refinement."],
+    artist: ["Wen Qu", "文曲", "Arts Star", "Eloquence, music, art, and talent."],
+    assistant: ["Tian Kui", "天魁", "Heavenly Noble", "Visible benefactors, help from people in power."],
+    aide: ["Tian Yue", "天鉞", "Hidden Noble", "Quiet benefactors and lucky chances."],
+    money: ["Lu Cun", "祿存", "Stored Wealth", "Savings, stability, and steady income."],
+    horse: ["Tian Ma", "天馬", "Sky Horse", "Movement, travel, and fast change."],
+    driven: ["Qing Yang", "擎羊", "Ram Blade", "Sharp, forceful energy; conflict or cutting through."],
+    tangled: ["Tuo Luo", "陀羅", "Spinning Top", "Delays, persistence, things that drag on."],
+    impulsive: ["Huo Xing", "火星", "Fire Star", "Sudden bursts, temper, quick wins and losses."],
+    spark: ["Ling Xing", "鈴星", "Bell Star", "Hidden pressure, slow-burn tension."],
+    ideologue: ["Di Kong", "地空", "Earthly Void", "Idealism, spiritual thinking, plans that can evaporate."],
+    fickle: ["Di Jie", "地劫", "Earthly Robbery", "Unexpected losses; unconventional paths."]
+  };
+  var MUT = { "禄": ["lu", "祿", "Luck"], "权": ["quan", "權", "Power"], "科": ["ke", "科", "Fame"], "忌": ["ji", "忌", "Obstacle"] };
+  var MUT_ORDER = ["lu", "quan", "ke", "ji"];
+  var MUT_INFO = { lu: ["Luck", "祿"], quan: ["Power", "權"], ke: ["Fame", "科"], ji: ["Obstacle", "忌"] };
+  var BRIGHT = { "庙": "Peak", "旺": "Strong", "得": "Good", "利": "Fair", "平": "Neutral", "不": "Weak", "陷": "Fallen" };
+  var STEM_PY = { "甲":"Jia","乙":"Yi","丙":"Bing","丁":"Ding","戊":"Wu","己":"Ji","庚":"Geng","辛":"Xin","壬":"Ren","癸":"Gui" };
+  var BRANCH_PY = { "子":"Zi","丑":"Chou","寅":"Yin","卯":"Mao","辰":"Chen","巳":"Si","午":"Wu","未":"Wei","申":"Shen","酉":"You","戌":"Xu","亥":"Hai" };
+  var FIVE = { "水二局":"Water 2", "木三局":"Wood 3", "金四局":"Metal 4", "土五局":"Earth 5", "火六局":"Fire 6" };
+  // palace index (0 = 寅) -> grid row/col
+  var POS = [[4,1],[3,1],[2,1],[1,1],[1,2],[1,3],[1,4],[2,4],[3,4],[4,4],[4,3],[4,2]];
+
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+  function starLabel(key, zhName) {
+    var m = MAJOR[key] || MINOR[key];
+    return m ? m[0] + " · " + m[2] : cap(key.replace(/\(.*\)/, "")) + " " + zhName;
+  }
+  function mutBadge(z) { var m = z && MUT[z]; return m ? '<span class="mut ' + m[0] + '" title="' + m[2] + '">' + m[1] + "</span>" : ""; }
+
+  var state = { en: null, zh: null, sel: 0, timeIndex: 6, isExample: true };
+
+  function cast(cal, dateStr, timeIndex, gender, leap) {
+    var parts = dateStr.split("-").map(Number);
+    var d = parts[0] + "-" + parts[1] + "-" + parts[2];
+    var A = window.iztro.astro;
+    if (cal === "lunar") {
+      return { en: A.byLunar(d, timeIndex, gender, !!leap, true, "en-US"), zh: A.byLunar(d, timeIndex, gender, !!leap, true, "zh-CN") };
+    }
+    return { en: A.bySolar(d, timeIndex, gender, true, "en-US"), zh: A.bySolar(d, timeIndex, gender, true, "zh-CN") };
+  }
+
+  function horoscopeFor(year) {
+    var dt = new Date(year, 6, 1);
+    try { return state.en.horoscope(dt, state.timeIndex); } catch (e) { return null; }
+  }
+
+  function renderBoard() {
+    var en = state.en, zh = state.zh, board = $("board");
+    var yr = Number($("year").value) || new Date().getFullYear();
+    var h = horoscopeFor(yr);
+    var opp = (state.sel + 6) % 12;
+    var html = "";
+    en.palaces.forEach(function (p, i) {
+      var z = zh.palaces[i], meta = PALACES[p.name] || [cap(p.name), z.name, ""];
+      var majors = p.majorStars.map(function (s, j) {
+        var zs = z.majorStars[j], m = MAJOR[s.name];
+        return '<span class="star-major"><span class="han">' + esc(zs.name) + "</span>" + mutBadge(zs.mutagen) + (m ? "<small>" + m[0] + "</small>" : "") + "</span>";
+      }).join("");
+      var minors = p.minorStars.map(function (s, j) {
+        var zs = z.minorStars[j]; return '<span class="han">' + esc(zs.name) + "</span>" + mutBadge(zs.mutagen);
+      }).join(" ");
+      var adj = z.adjectiveStars.slice(0, 6).map(function (s) { return s.name; }).join(" ");
+      var tags = "";
+      if (p.isBodyPalace) tags += '<span class="tag body" title="Body palace">Body</span>';
+      if (h && h.decadal && h.decadal.index === i) tags += '<span class="tag dec" title="Current decade">Decade</span>';
+      if (h && h.yearly && h.yearly.index === i) tags += '<span class="tag yr" title="Year palace">' + yr + "</span>";
+      var r = POS[i];
+      html += '<button type="button" class="palace' + (i === state.sel ? " sel" : "") + (i === opp ? " opp" : "") + '" data-i="' + i + '" style="grid-row:' + r[0] + ";grid-column:" + r[1] + '" aria-label="' + esc(meta[0]) + ' palace">' +
+        '<div class="p-tags">' + tags + "</div>" +
+        '<div class="p-major">' + (majors || '<span class="p-adj">No main star</span>') + "</div>" +
+        (minors ? '<div class="p-minor">' + minors + "</div>" : "") +
+        (adj ? '<div class="p-adj han">' + esc(adj) + "</div>" : "") +
+        '<div class="p-foot"><span class="p-name' + (p.name === "soul" ? " soul" : "") + '">' + esc(meta[0]) + '</span><span class="p-gz"><span class="han">' + esc(z.heavenlyStem + z.earthlyBranch) + "</span> " + p.decadal.range[0] + "–" + p.decadal.range[1] + "</span></div>" +
+        "</button>";
+    });
+    var cd = zh.chineseDate.split(" ");
+    var pillarNames = ["Year", "Month", "Day", "Hour"];
+    var soulKey = en.soul, bodyKey = en.body;
+    html += '<div class="center">' +
+      '<div class="seal" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#sunmoon"/></svg><span>紫微</span></div>' +
+      '<div class="pillars">' + cd.map(function (c, k) { return "<span>" + esc(c) + "<small>" + pillarNames[k] + "</small></span>"; }).join("") + "</div>" +
+      '<dl class="facts">' +
+      "<dt>Born</dt><dd>" + esc(en.solarDate) + " · " + esc(HOURS[state.timeIndex][1]) + "</dd>" +
+      "<dt>Lunar</dt><dd class=\"han\">" + esc(zh.lunarDate) + "</dd>" +
+      "<dt>Element</dt><dd>" + esc(FIVE[zh.fiveElementsClass] || zh.fiveElementsClass) + ' <span class="han">' + esc(zh.fiveElementsClass) + "</span></dd>" +
+      "<dt>Life master</dt><dd>" + esc(starLabel(soulKey, zh.soul)) + "</dd>" +
+      "<dt>Body master</dt><dd>" + esc(starLabel(bodyKey, zh.body)) + "</dd>" +
+      "<dt>Zodiac</dt><dd>" + esc(cap(en.zodiac)) + " " + esc(zh.zodiac) + " · " + esc(cap(en.sign)) + "</dd>" +
+      "</dl></div>";
+    board.innerHTML = html;
+  }
+
+  function renderDetail() {
+    var i = state.sel, p = state.en.palaces[i], z = state.zh.palaces[i];
+    var meta = PALACES[p.name] || [cap(p.name), z.name, ""];
+    var oppP = state.en.palaces[(i + 6) % 12], oppMeta = PALACES[oppP.name];
+    var out = "<div><span class=\"label\">Palace</span><h2>" + esc(meta[0]) + ' <span class="han">' + esc(meta[1]) + "</span></h2></div>";
+    out += "<p>" + esc(meta[2]) + "</p>";
+    out += '<div class="meta"><span>Stem-branch <span class="han">' + esc(z.heavenlyStem + z.earthlyBranch) + "</span> " + esc((STEM_PY[z.heavenlyStem] || "") + " " + (BRANCH_PY[z.earthlyBranch] || "")) + "</span>" +
+      "<span>Decade: ages " + p.decadal.range[0] + "–" + p.decadal.range[1] + "</span>" +
+      (p.isBodyPalace ? "<span>Also your Body palace</span>" : "") + "</div>";
+    if (p.majorStars.length) {
+      out += '<span class="label">Main stars</span>';
+      p.majorStars.forEach(function (s, j) {
+        var zs = z.majorStars[j], m = MAJOR[s.name] || [cap(s.name), zs.name, "", ""];
+        var b = BRIGHT[zs.brightness];
+        var dp = DEEP[s.name];
+        var focus = PALACE_FOCUS[p.name] || "this area";
+        out += '<div class="starblock"><div class="nm">' + esc(m[0]) + ' <span class="han">' + esc(m[1]) + "</span> · " + esc(m[2]) + mutBadge(zs.mutagen) +
+          (b ? ' <span class="bri">' + b + " strength</span>" : "") + "</div><div>" + esc(m[3]) + "</div>" +
+          '<div class="inpalace">In your ' + esc(meta[0]) + " palace, these traits shape " + esc(focus) + "." +
+          (b && BRIGHT_INFO[b] ? " At " + b.toLowerCase() + " strength, " + esc(BRIGHT_INFO[b]) : "") + "</div>" +
+          (dp ? '<div class="traits">' +
+            "<div><b>Strengths</b><span>" + esc(dp[0]) + "</span></div>" +
+            "<div><b>Watch for</b><span>" + esc(dp[1]) + "</span></div>" +
+            "<div><b>Love</b><span>" + esc(dp[2]) + "</span></div>" +
+            "<div><b>Money</b><span>" + esc(dp[3]) + "</span></div>" +
+            "<div><b>Work</b><span>" + esc(dp[4]) + "</span></div></div>" : "") +
+          (zs.mutagen && MUT_TEXT[zs.mutagen] ? '<div class="mutnote">' + mutBadge(zs.mutagen) + " " + esc(MUT_TEXT[zs.mutagen].replace("{f}", focus)) + "</div>" : "") +
+          "</div>";
+      });
+    } else {
+      out += '<p class="empty-hint">No main star sits here. Tradition borrows the main stars from the opposite palace, ' + esc(oppMeta ? oppMeta[0] : "") + ", and reads them with a softer tone.</p>";
+    }
+    var sup = p.minorStars.map(function (s, j) {
+      var zs = z.minorStars[j], m = MINOR[s.name];
+      return m ? '<div class="starblock"><div class="nm">' + esc(m[0]) + ' <span class="han">' + esc(m[1]) + "</span> · " + esc(m[2]) + mutBadge(zs.mutagen) + "</div><div>" + esc(m[3]) + "</div>" +
+        (zs.mutagen && MUT_TEXT[zs.mutagen] ? '<div class="mutnote">' + mutBadge(zs.mutagen) + " " + esc(MUT_TEXT[zs.mutagen].replace("{f}", PALACE_FOCUS[p.name] || "this area")) + "</div>" : "") + "</div>" : "";
+    }).join("");
+    if (sup) out += '<span class="label">Supporting stars</span>' + sup;
+    if (p.adjectiveStars.length) {
+      out += '<span class="label">Minor stars</span><div class="chips">' + p.adjectiveStars.map(function (s, j) {
+        return '<span class="chip">' + esc(cap(s.name.replace(/\(.*\)/, ""))) + '<span class="han">' + esc(z.adjectiveStars[j].name) + "</span></span>";
+      }).join("") + "</div>";
+    }
+    out += '<p class="foot">Read with its opposite palace, <strong>' + esc(oppMeta ? oppMeta[0] : "") + "</strong> (shaded on the board), which always shapes this one.</p>";
+    $("detail").innerHTML = out;
+  }
+
+  function transCells(list) {
+    return '<div class="trans">' + list.map(function (key, k) {
+      var t = MUT_ORDER[k], info = MUT_INFO[t];
+      var m = MAJOR[key] || MINOR[key];
+      var nm = m ? m[0] + " " + m[1] : cap(key);
+      var pi = -1;
+      state.en.palaces.forEach(function (p, idx) { p.majorStars.concat(p.minorStars).forEach(function (s) { if (s.name === key) pi = idx; }); });
+      var where = pi >= 0 ? (PALACES[state.en.palaces[pi].name] || [""])[0] : "";
+      return '<div class="tcell ' + t + '"><b>' + info[0] + ' <span class="han">' + info[1] + "</span></b><span>" + esc(nm) + "</span>" + (where ? '<span class="label" style="letter-spacing:.06em">in ' + esc(where) + "</span>" : "") + "</div>";
+    }).join("") + "</div>";
+  }
+
+  function renderTiming() {
+    var yr = Number($("year").value) || new Date().getFullYear();
+    var h = horoscopeFor(yr), body = $("timingBody");
+    if (!h) { body.innerHTML = '<p class="empty-hint">Enter a year between 1900 and 2100.</p>'; return; }
+    var dp = state.en.palaces[h.decadal.index], yp = state.en.palaces[h.yearly.index];
+    var age = h.age && h.age.nominalAge;
+    var html = "";
+    if (age > 0) {
+      html += "<h3>Decade: " + esc((PALACES[dp.name] || [cap(dp.name)])[0]) + " palace, ages " + dp.decadal.range[0] + "–" + dp.decadal.range[1] + "</h3>";
+      html += "<p>This ten-year period runs through the " + esc((PALACES[dp.name] || [""])[0]) + " palace, so its themes take the lead.</p>" + transCells(h.decadal.mutagen);
+      html += "<h3>" + yr + ": " + esc((PALACES[yp.name] || [cap(yp.name)])[0]) + " palace</h3>";
+      html += "<p>Age " + age + " (Chinese count). The year's focus falls on the " + esc((PALACES[yp.name] || [""])[0]) + " palace, and these four stars transform:</p>" + transCells(h.yearly.mutagen);
+    } else {
+      html = '<p class="empty-hint">Pick a year after the birth year.</p>';
+    }
+    body.innerHTML = html;
+  }
+
+  function mainStarsOf(i) {
+    var p = state.en.palaces[i];
+    var list = p.majorStars;
+    if (!list.length) list = state.en.palaces[(i + 6) % 12].majorStars; // empty palace borrows its opposite
+    return list.map(function (s) { return s.name; }).filter(function (k) { return MAJOR[k]; });
+  }
+  function starNames(keys) { return keys.map(function (k) { return MAJOR[k][0] + " (" + MAJOR[k][2] + ")"; }).join(" and "); }
+  function idxOf(name) { return state.en.palaces.findIndex(function (p) { return p.name === name; }); }
+
+  function renderSummary() {
+    var en = state.en, zh = state.zh;
+    var soulI = idxOf("soul"), bodyI = en.palaces.findIndex(function (p) { return p.isBodyPalace; });
+    var core = mainStarsOf(soulI);
+    var html = '<div><span class="label">' + (state.isExample ? "Example chart at a glance" : "Your chart at a glance") + "</span><h2>The big picture</h2></div>";
+    html += '<div class="sumgrid">';
+    var coreText = core.length ? core.map(function (k) { return MAJOR[k][3]; }).join(" ") : "";
+    html += '<div class="sumitem"><h3>Who you are</h3><p>Your Life palace holds ' + esc(starNames(core) || "no main star") +
+      (en.palaces[soulI].majorStars.length ? "" : ", borrowed from the opposite Travel palace") + ". " + esc(coreText) + "</p></div>";
+    if (bodyI === soulI) {
+      html += '<div class="sumitem"><h3>Who you grow into</h3><p>Your Body palace shares the Life palace. That means you stay very true to your core nature all your life: what you see in the Life palace only gets stronger with age.</p></div>';
+    } else if (bodyI >= 0) {
+      var bp = en.palaces[bodyI], bm = PALACES[bp.name] || [cap(bp.name)];
+      html += '<div class="sumitem"><h3>Who you grow into</h3><p>Your Body palace sits in ' + esc(bm[0]) + ". From your mid-30s on, " + esc(PALACE_FOCUS[bp.name] || "this area") +
+        " becomes a bigger focus, and " + esc(starNames(mainStarsOf(bodyI)) || "its stars") + " shape how you mature.</p></div>";
+    }
+    var found = {};
+    zh.palaces.forEach(function (zp, i) { zp.majorStars.concat(zp.minorStars).forEach(function (s, j) {
+      if (s.mutagen) { var all = en.palaces[i].majorStars.concat(en.palaces[i].minorStars); found[s.mutagen] = { i: i, key: all[j].name }; } }); });
+    function mutItem(z, cls, title, lead) {
+      var f = found[z]; if (!f) return "";
+      var pm = PALACES[en.palaces[f.i].name] || [cap(en.palaces[f.i].name)], sm = MAJOR[f.key] || MINOR[f.key];
+      return '<div class="sumitem ' + cls + '"><h3>' + title + "</h3><p>" + lead + " " + esc(sm ? sm[0] : cap(f.key)) + " in your <strong>" + esc(pm[0]) + "</strong> palace. " +
+        esc(MUT_TEXT[z].replace("{f}", PALACE_FOCUS[en.palaces[f.i].name] || "this area")) + "</p></div>";
+    }
+    html += mutItem("禄", "good", "Where life flows", "You were born with Luck on");
+    html += mutItem("忌", "hard", "Your main lesson", "You were born with Obstacle on");
+    html += mutItem("权", "", "Where you hold power", "Power sits on");
+    html += mutItem("科", "", "Where you shine", "Fame sits on");
+    [["career", "Work style"], ["wealth", "Money style"], ["spouse", "In love"]].forEach(function (a) {
+      var i = idxOf(a[0]), ks = mainStarsOf(i); if (!ks.length) return;
+      var lines = ks.map(function (k) { var d = DEEP[k]; return d ? d[a[0] === "career" ? 4 : a[0] === "wealth" ? 3 : 2] : ""; }).join(" ");
+      html += '<div class="sumitem"><h3>' + a[1] + "</h3><p>" + esc(starNames(ks)) + (en.palaces[i].majorStars.length ? "" : " (borrowed from the opposite palace)") + ". " + esc(lines) + "</p></div>";
+    });
+    html += "</div>";
+    html += '<p class="foot">Tap any palace on the board for its full reading: each star\'s strengths, watch-outs, love, money and work, plus what its strength and transformations mean there.</p>';
+    $("summary").innerHTML = html;
+  }
+
+  function renderAll() { renderSummary(); renderBoard(); renderDetail(); renderTiming(); }
+
+  $("board").addEventListener("click", function (e) {
+    var b = e.target.closest(".palace"); if (!b) return;
+    state.sel = Number(b.dataset.i); renderBoard(); renderDetail();
+    if (window.matchMedia("(max-width: 960px)").matches) $("detail").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("year").addEventListener("input", function () { renderBoard(); renderTiming(); });
+  document.querySelectorAll('input[name="cal"]').forEach(function (r) { r.addEventListener("change", function () { $("leapwrap").hidden = this.value !== "lunar" || !this.checked; }); });
+
+  $("birth").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var note = $("note");
+    var dateStr = $("date").value;
+    if (!dateStr) { note.className = "note err"; note.textContent = "Enter a birth date to cast the chart."; return; }
+    var cal = document.querySelector('input[name="cal"]:checked').value;
+    var gender = document.querySelector('input[name="gender"]:checked').value;
+    var ti = Number($("hour").value);
+    try {
+      var c = cast(cal, dateStr, ti, gender, $("leap").value === "1");
+      state.en = c.en; state.zh = c.zh; state.timeIndex = ti; state.isExample = false;
+      state.sel = c.en.palaces.findIndex(function (p) { return p.name === "soul"; });
+      note.className = "note";
+      note.textContent = "Your chart: " + c.en.solarDate + ", " + HOURS[ti][1] + " (" + HOURS[ti][0] + "), " + (gender === "male" ? "male" : "female") + ". Tap any palace to read it.";
+      try { localStorage.setItem("psc-birth", JSON.stringify({ cal: cal, date: dateStr, ti: ti, gender: gender, leap: $("leap").value })); } catch (err) {}
+      renderAll();
+    } catch (err) {
+      note.className = "note err";
+      note.textContent = "That date couldn't be charted. Check it's a real date between 1900 and 2100" + (cal === "lunar" ? " on the lunar calendar." : ".");
+    }
+  });
+
+  function boot() {
+    if (!window.iztro) { $("note").className = "note err"; $("note").textContent = "The chart engine didn't load. Check your connection and reload the page."; return; }
+    $("year").value = new Date().getFullYear();
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem("psc-birth") || "null"); } catch (e) {}
+    if (saved && saved.date) {
+      $("date").value = saved.date; $("hour").value = String(saved.ti);
+      var g = $(saved.gender === "male" ? "g-m" : "g-f"); if (g) g.checked = true;
+      var cl = $(saved.cal === "lunar" ? "cal-lunar" : "cal-solar"); if (cl) cl.checked = true;
+      $("leapwrap").hidden = saved.cal !== "lunar"; $("leap").value = saved.leap || "0";
+      $("birth").requestSubmit ? $("birth").requestSubmit() : $("castbtn").click();
+      return;
+    }
+    var c = cast("solar", "1990-06-15", 6, "female", false);
+    state.en = c.en; state.zh = c.zh; state.timeIndex = 6;
+    state.sel = c.en.palaces.findIndex(function (p) { return p.name === "soul"; });
+    renderAll();
+  }
+  boot();
+})();
+</script>
+
+<script>
+(function(){var c=document.getElementById("stars");if(!c||!c.getContext)return;var x=c.getContext("2d"),S=[],still=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function size(){var d=window.devicePixelRatio||1;c.width=innerWidth*d;c.height=innerHeight*d;x.setTransform(d,0,0,d,0,0);S=[];var n=Math.round(innerWidth*innerHeight/5200);for(var i=0;i<n;i++)S.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight*.85,r:Math.random()*1.2+.2,p:Math.random()*6.28,s:.4+Math.random()*1.4,g:Math.random()<.12});}
+function draw(t){x.clearRect(0,0,c.width,c.height);for(var i=0;i<S.length;i++){var s=S[i],a=still?.7:.45+.45*Math.sin(t/1000*s.s+s.p);x.globalAlpha=a;x.fillStyle=s.g?"#f2c25a":"#f4ecd8";x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill();}if(!still)requestAnimationFrame(draw);}
+size();addEventListener("resize",function(){size();if(still)draw(0);});requestAnimationFrame(draw);})();
+</script>
+
+</body>
+</html>
